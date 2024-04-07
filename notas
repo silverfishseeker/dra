@@ -1,1 +1,3 @@
 ng serve
+ng generate service XX
+ng generate component XX
