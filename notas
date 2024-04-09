@@ -1,3 +1,6 @@
 ng serve
 ng generate service XX
 ng generate component XX
+ng generate module XX --flat --module=app
+    --flat	Puts the file in src/app instead of its own directory.
+    --module=app	Tells ng generate to register it in the imports array of the AppModule.
