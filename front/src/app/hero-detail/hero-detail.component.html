@@ -5,5 +5,11 @@
     <label for="hero-name">Hero name: </label>
     <input id="hero-name" [(ngModel)]="hero.name" placeholder="name">
   </div>
+  <h3> Powers: </h3>
+  <ul>
+    <li *ngFor="let power of powers">
+      <input [(ngModel)]="power.name" placeholder="power">
+    </li>
+  </ul>
   <button type="button" (click)="goBack()">go back</button>
 </div>
