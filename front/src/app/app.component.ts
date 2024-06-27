@@ -11,5 +11,5 @@ import { MessagesComponent } from './messages/messages.component';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'HAHAHHA';
+  title = 'TOUR OF HEROES';
 }
