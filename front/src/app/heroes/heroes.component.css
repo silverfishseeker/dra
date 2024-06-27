@@ -1,11 +1,10 @@
-
 h2, h3 {
   color: #444;
   font-family: Arial, Helvetica, sans-serif;
   font-weight: lighter;
 }
 
-.colums {
+.columns {
   display: grid;
   grid-template-columns: auto auto;
 }
@@ -17,42 +16,27 @@ ul {
 li {
   display: block;
 }
-button {
+
+a {
+  display: block;
   background-color: #eee;
   border-radius: 4px;
   cursor: pointer;
   color: black;
   font-size: 1.2rem;
-  padding: 0;
-  margin: 0;
-  width: 20rem;
-  text-align: left;
+  padding: 0.5rem 1rem; /* Ajuste de padding para hacerlo más compacto */
+  text-decoration: none;
   margin: 0.1rem;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  text-align: left;
 }
-button:hover {
+
+a:hover {
   background-color: black;
-  color: white;
-}
-button:disabled {
-  background-color: #eee;
-  color: #aaa;
-  cursor: auto;
-}
-
-button.selected {
-  background-color: #782f36;
-  color: white;
-}
-
-button.selected:hover {
-  background-color: #2e0d11;
   color: white;
 }
 
 .badge {
   background-color: black;
   color: white;
-  padding: 1rem;
+  padding: 0.5rem;
 }
