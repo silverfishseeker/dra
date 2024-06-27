@@ -1,16 +1,29 @@
 h2, h3 {
-    color: #444;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: lighter;
+  color: #444;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 input[type="text"], button {
-    color: #333;
-    font-family: Cambria, Georgia, serif;
-  }
+  color: #333;
+  font-family: Cambria, Georgia, serif;
+}
 
 .heroPage {
-    align-self:center;
-    align-content: center;
-    text-align: center;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #e0f7fa;
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px solid #00796b;
+}
+
+.heroPage h2, .heroPage div {
+  margin-bottom: 1rem;
+}
+
+.heroPage input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
