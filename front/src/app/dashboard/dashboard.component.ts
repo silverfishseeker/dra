@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { NgFor } from '@angular/common';
 import { Hero } from '../hero';
 import { HeroService } from '../hero.service';
+import { HeroSearchComponent } from '../hero-search/hero-search.component';
 
 @Component({
+  standalone: true,
+  imports: [HeroSearchComponent, NgFor],
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: [ './dashboard.component.css' ]
