@@ -41,7 +41,7 @@ export class HeroDetailComponent {
 
   save(): void {
     if (this.hero) {
-      this.heroService.updateHero(this.hero)
+      this.heroService.updateHero(this.hero, this.powers)
         .subscribe(() => this.goBack());
     }
   }

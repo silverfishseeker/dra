@@ -18,6 +18,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/api/heroes")
+@CrossOrigin(origins = "http://localhost:4200")
 public class HeroController {
 
     @Autowired
@@ -66,22 +67,6 @@ public class HeroController {
     }
 
     @Transactional
-    @PutMapping("/{heroId}/powers/{powerId}")
-    public ResponseEntity<Hero> updatePowerOfHero(@PathVariable Long heroId, @PathVariable Long powerId, @RequestBody Power updatedPower) {
-        Optional<Hero> optionalHero = heroRepository.findById(heroId);
-        Optional<Power> optionalPower = powerRepository.findById(powerId);
-        if (optionalHero.isPresent() && optionalPower.isPresent()) {
-            Hero hero = optionalHero.get();
-            Power power = optionalPower.get();
-            power.setName(updatedPower.getName());
-            powerRepository.save(power);
-            return ResponseEntity.ok(hero);
-        } else {
-            throw new EntityNotFoundException("Hero or Power not found with id: " + heroId + " or " + powerId);
-        }
-    }
-
-    @Transactional
     @DeleteMapping("/{heroId}/powers/{powerId}")
     public ResponseEntity<Void> removePowerFromHero(@PathVariable Long heroId, @PathVariable Long powerId) {
         Optional<Hero> optionalHero = heroRepository.findById(heroId);
@@ -92,6 +77,26 @@ public class HeroController {
             heroRepository.save(hero);
             powerRepository.deleteById(powerId);
             return ResponseEntity.noContent().build();
+        } else {
+            throw new EntityNotFoundException("Hero not found with id: " + heroId);
+        }
+    }
+
+    @Transactional
+    @PutMapping("/{heroId}/powers")
+    public ResponseEntity<Hero> updatePowersOfHero(@PathVariable Long heroId, @RequestBody Set<Power> updatedPowers) {
+        Optional<Hero> optionalHero = heroRepository.findById(heroId);
+        if (optionalHero.isPresent()) {
+            Hero hero = optionalHero.get();
+            // Eliminar poderes existentes y actualizar con los nuevos
+            hero.getPowers().clear();
+            updatedPowers.forEach(power -> {
+                power.setHero(hero);
+                powerRepository.save(power);
+                hero.getPowers().add(power);
+            });
+            heroRepository.save(hero);
+            return ResponseEntity.ok(hero);
         } else {
             throw new EntityNotFoundException("Hero not found with id: " + heroId);
         }

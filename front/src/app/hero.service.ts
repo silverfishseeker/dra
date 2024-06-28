@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Hero, Power } from './hero';
-import { Observable, of } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { Observable, forkJoin, of } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
@@ -10,7 +10,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 })
 export class HeroService {
 
-  private heroesUrl = 'http:/localhost:8080/api/heroes';  // URL to web api
+  private heroesUrl = 'http://localhost:8080/api/heroes';  // URL to web api
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -26,15 +26,19 @@ export class HeroService {
   
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
-      console.error(error);
+      console.error(error.message);
+      console.info(`URL: ${this.heroesUrl}`);
+      console.log();
       this.log(`${operation} failed: ${error.message}`);
       return of(result as T);
     };
   }
   
   getHeroes(): Observable<Hero[]> {
-    return this.http.get<Hero[]>(this.heroesUrl)
+    return this.http.get<any>(this.heroesUrl)
     .pipe(
+      map(response => response._embedded.heroes), 
+      tap(_ => this.log(`fetched heroes `)),
       catchError(this.handleError<Hero[]>('getHeroes', []))
     );
   }
@@ -44,14 +48,6 @@ export class HeroService {
     return this.http.get<Hero>(url).pipe(
       tap(_ => this.log(`fetched hero id=${id}`)),
       catchError(this.handleError<Hero>(`getHero id=${id}`))
-    );
-  }
-
-  /** PUT: update the hero on the server */
-  updateHero(hero: Hero): Observable<any> {
-    return this.http.put(this.heroesUrl, hero, this.httpOptions).pipe(
-      tap(_ => this.log(`updated hero id=${hero.id}`)),
-      catchError(this.handleError<any>('updateHero'))
     );
   }
 
@@ -88,14 +84,29 @@ export class HeroService {
   }
 
   getPowers(id: number): Observable<Power[]> {
+    const url = `${this.heroesUrl}/${id}/powers`;
+    return this.http.get<any>(url)
+    .pipe(
+      map(response => response._embedded.powers), 
+      tap(_ => this.log(`fetched powers for hero id=${id}`)),
+      catchError(this.handleError<Hero[]>('getHeroes', []))
+    );
+  }
 
-    const powers = [
-      { name: 'Muy buenas' },
-      { name: 'Haha saludos' },
-      { name: 'Poder de fuego infernal' },
-      { name: 'Elástico'}
-    ];
-    this.log('fetched powers id=${id}');
-    return of(powers as Power[]);
+  /** PUT: update the hero on the server */
+  updateHero(hero: Hero, powers: Power[]): Observable<any> {
+    const updateHeroUrl = `${this.heroesUrl}/${hero.id}`;
+    const updateHero$ = this.http.put(updateHeroUrl, hero, this.httpOptions).pipe(
+      tap(_ => this.log(`updated hero id=${hero.id}`)),
+      catchError(this.handleError<any>('updateHero'))
+    );
+
+    const updatePowersUrl = `${this.heroesUrl}/${hero.id}/powers`;
+    const updatePowers$ = this.http.put(updatePowersUrl, powers, this.httpOptions).pipe(
+      tap(_ => this.log(`updated powers for hero id=${hero.id}`)),
+      catchError(this.handleError<any>('updatePowers')));
+
+    return forkJoin([updateHero$, updatePowers$]);
+
   }
 }
